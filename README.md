@@ -16,7 +16,7 @@ https://docs.mongodb.com/manual/installation/
 6. go to: http://localhost:3000
 
 ###login: 
-    email: "JohnDoe@gmail.com"  
+    email: "JaneDoe@gmail.com"  
     password: "paSSw0rd"  
 
 ###notes:

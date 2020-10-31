@@ -2,12 +2,13 @@ const express = require('express')
 require('dotenv').config()
 require('./db/mongoose')
 const cors = require('cors')
+const userModel = require('./models/user')
 const userRouter = require('./routers/user')
 const jobRouter = require('./routers/job')
 const cronManager = require('./utils/cronManager')
 
 const initData = async () => {
-    const user = new User({
+    const user = new userModel({
         name: "Jane Doe",
         email: "JaneDoe@gmail.com",
         password: "paSSw0rd",
