@@ -34,7 +34,7 @@ router.post('/jobs',auth, async (req, res) => {
 router.delete('/jobs/:id', auth, async (req, res) => {
     try {
         const job = await jobModel.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
-        cronManager.removeJob(job.subject)
+        cronManager.removeJob(job.subject,req.user._id)
         if (!job) {
             res.status(404).send()
         }

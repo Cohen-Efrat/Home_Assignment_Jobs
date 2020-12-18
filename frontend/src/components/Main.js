@@ -99,19 +99,18 @@ export default function Main() {
     };
     useEffect(() => {
         getData();
-        socket.emit("join", {user: authData.user});
+
+        socket.emit("join", {token: authData.token});
     }, []);
 
     useEffect(() => {
         const handleNewGif = (url, subject) => {
-            const result = tileData.find((tile) => tile.img === url);
-            if (!result) {
+            console.log(url,subject);
                 setTileData([...tileData, {
                     img: url,
                     title: subject,
                     key: url
                 }])
-            }
         }
         const onNewGif = ({url, subject}) => handleNewGif(url, subject);
         socket.on("newGif", onNewGif);
@@ -141,7 +140,7 @@ export default function Main() {
             subject: response.subject,
             seconds: response.frequency,
             jobId: response._id,
-            userId: authData.user._id
+            token: authData.token
         });
         return response
     }

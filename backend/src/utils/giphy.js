@@ -12,6 +12,13 @@ const getGif= async (subject) => {
 }
 
 
+// giphy.search({
+//     q: 'pokemon',
+//     rating: 'g'
+// }, function (err, res) {
+//     // Res contains gif data!
+// });
+
 module.exports = {
     getGif
 }

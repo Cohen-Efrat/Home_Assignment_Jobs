@@ -2,6 +2,7 @@ const express = require('express')
 require('dotenv').config()
 require('./db/mongoose')
 const cors = require('cors')
+const jwt = require('jsonwebtoken')
 const userModel = require('./models/user')
 const userRouter = require('./routers/user')
 const jobRouter = require('./routers/job')
@@ -16,7 +17,7 @@ const initData = async () => {
     })
     await user.save()
 }
-initData()
+// initData()
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -38,15 +39,25 @@ app.listen(port, () => {
 const options = {};
 const io = require('socket.io')(4000, options);
 
+const getUser = async (token)=>{
+    const decoded = jwt.verify(token, process.env.JWT_SIGNATURE)
+    const user = await userModel.findOne({ _id: decoded._id, 'tokens.token': token })
+    return user
+}
 
 io.on("connection", (socket) => {
     console.log("New client connected");
-    socket.on("join", ({user}) => {
-        const id = user._id
-        socket.join(id)
+    socket.on("join", async ({token}) => {
+        const user = await getUser(token)
+        if(user){
+            socket.join(user._id)
+        }
     });
-    socket.on("addJob", ({subject, seconds, jobId, userId}) => {
-        cronManager.createJob(subject, seconds, jobId, userId, socket)
+    socket.on("addJob", async ({subject, seconds, jobId, token}) => {
+        const user = await getUser(token)
+        if(user){
+            cronManager.createJob(subject, seconds, jobId, user._id, socket)
+        }
     });
 
     socket.on("disconnect", () => {
